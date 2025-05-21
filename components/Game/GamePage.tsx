@@ -96,13 +96,13 @@ export default function GamePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-between p-6 relative">
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-between px-6 pt-30 pb-6  relative">
       <div className="w-full max-w-3xl space-y-4">
         <TimerBar timeLeft={game.timeLeft} totalTime={game.totalTime} />
 
         <ScorePanel
           score={game.score}
-          wpm={game.wpm}
+          wpm={game.wpm} /* Words per minute (WPM) */
           level={game.level}
           accuracy={game.accuracy}
         />
@@ -131,6 +131,6 @@ export default function GamePage() {
       {game.isGameOver && (
         <GameOverModal stats={game.stats} onRestart={game.restart} />
       )}
-    </main>
+    </div>
   );
 }
