@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { sora } from "@/libs/fonts";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "TypeMaster – Keyboard Speed Game",
@@ -61,7 +63,9 @@ export default function RootLayout({
       <body
         className={`${sora.className} bg-gray-950 text-zinc-100 antialiased`}
       >
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

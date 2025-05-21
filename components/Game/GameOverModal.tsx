@@ -32,7 +32,10 @@ export default GameOverModal;
 */
 
 // components/Game/GameOverModal.tsx
+import Link from "next/link";
 import React from "react";
+import { IoHomeSharp } from "react-icons/io5";
+import { VscDebugRestart } from "react-icons/vsc";
 
 type Props = {
   stats: {
@@ -53,12 +56,22 @@ const GameOverModal = ({ stats, onRestart }: Props) => {
         <p>WPM: {stats.wpm}</p>
         <p>Accuracy: {stats.accuracy}%</p>
         <p>Level: {stats.level}</p>
-        <button
-          onClick={onRestart}
-          className="mt-4 bg-green-600 px-4 py-2 rounded text-white"
-        >
-          Restart
-        </button>
+
+        <div className="flex gap-4 justify-center">
+          <Link
+            href={"/"}
+            className="mt-4 bg-blue-600 px-8 py-2 rounded text-white"
+          >
+            <IoHomeSharp size={18} />
+          </Link>
+
+          <button
+            onClick={onRestart}
+            className="mt-4 bg-green-600 px-8 py-2 rounded text-white"
+          >
+            <VscDebugRestart size={18} />
+          </button>
+        </div>
       </div>
     </div>
   );

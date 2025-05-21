@@ -1,48 +1,44 @@
-/*
-import React from "react";
-
-function Hero() {
-  return (
-    <div className="bg-zinc-900 text-zinc-100 min-h-screen px-4 py-6">
-      <div className="bg-zinc-800 p-6 rounded-xl shadow-md">
-        <h1 className="text-3xl font-bold text-emerald-400">TypeMaster</h1>
-        <p className="text-zinc-400 mt-2">
-          Sharpen your skills. Level up your typing game.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default Hero;
-*/
-
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import DifficultySelect from "./DifficultySelect";
 import ScoreCard from "./ScoreCard";
-import ThemeToggle from "./ThemeToggle";
+import Link from "next/link";
 
 export default function HomePage() {
+  const router = useRouter();
+
   const [bestScore, setBestScore] = useState<number | null>(null);
   const [bestWPM, setBestWPM] = useState<number | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
+  const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
     const score = localStorage.getItem("bestScore");
     const wpm = localStorage.getItem("bestWPM");
+    const savedDifficulty = localStorage.getItem("difficulty");
     if (score) setBestScore(Number(score));
     if (wpm) setBestWPM(Number(wpm));
+    if (savedDifficulty) {
+      setSelectedDifficulty(capitalize(savedDifficulty));
+    }
   }, []);
+
+  const capitalize = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1);
+
+  const handleStartClick = () => {
+    if (!selectedDifficulty) {
+      setShowWarning(true);
+      setTimeout(() => setShowWarning(false), 2500);
+      return;
+    }
+    router.push("/game");
+  };
 
   return (
     <main className="min-h-screen bg-gray-900 text-white flex items-center justify-center relative px-4">
-      {/* Optional theme toggle */}
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-
       <div className="text-center space-y-6">
         <h1 className="text-5xl font-bold text-blue-400">TypeMaster</h1>
         <p className="text-lg text-gray-300">
@@ -51,20 +47,36 @@ export default function HomePage() {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
-          <Link href="/game">
-            <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-lg font-semibold transition cursor-pointer">
-              Start Game
-            </button>
-          </Link>
+          <button
+            onClick={handleStartClick}
+            className={`px-6 py-3 rounded-xl text-lg font-semibold transition ${
+              selectedDifficulty
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-blue-800 text-blue-200 cursor-not-allowed"
+            }`}
+          >
+            Start Game
+          </button>
+
           <Link href="/progress">
-            <button className="px-6 py-3 bg-gray-700 hover:bg-gray-800 text-white rounded-xl text-lg font-semibold transition cursor-pointer">
+            <button className="px-6 py-3 bg-gray-700 hover:bg-gray-800 text-white rounded-xl text-lg font-semibold transition">
               View Progress
             </button>
           </Link>
         </div>
 
+        {/* Warning message */}
+        {showWarning && (
+          <p className="text-red-400 mt-2 font-medium animate-pulse">
+            Please select a difficulty before starting the game.
+          </p>
+        )}
+
         {/* Difficulty select */}
-        <DifficultySelect />
+        <DifficultySelect
+          value={selectedDifficulty}
+          onChange={(value) => setSelectedDifficulty(value)}
+        />
 
         {/* Score display */}
         <ScoreCard score={bestScore} wpm={bestWPM} />
